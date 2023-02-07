@@ -1,0 +1,45 @@
+#mal{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	margin-top: 100px;
+	width: 250px;
+	height: 100px;
+}
+#askdj{
+	font-size: 30px;
+}
+#fanhuia{
+	background-color: #d0dafd;
+	font-size: 30px;
+	margin-left: 12px;
+	margin-top: 10px;
+	width: 100px;
+	height: 45px;
+}
+/*连接平常的状态*/
+a:link {
+	color:#FF0000;
+	text-decoration: none;
+	font-size: 30px;
+	margin: auto;
+}
+
+/*连接被访问过之后*/
+a:visited {
+	color:#000000;
+    text-decoration:none;
+}
+/*鼠标放到连接上的时候*/
+a:hover {
+color:#FFFFFF;
+text-decoration:none;
+}
+/*对按下的a标签生效*/
+a:active {
+color:#FF0000;
+text-decoration:none;
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+<link rel="stylesheet" href="{{url_for('static',filename='../static/css/main.css')}}">
+      <script src="{{ url_for('static',filename='js/jquery-1.9.1.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/echarts.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+    <script>
+        //查询函数
+        function search(){
+         //将页面中的查询条件自动拼成json串传给py文件
+       var frm=$("#form2").serializeArray();
+       $.post("{{url_for('conflagration_select')}}",frm,function (d){
+           var s=''
+           $.each(d,function (i,f){
+               s+='<tr>'
+               s+='<td>'+f.year+'</td>'
+               s+='<td>'+f.commonly+'</td>'
+               s+='<td>'+f.more+'</td>'
+               s+='<td>'+f.major+'</td>'
+               s+='<td>'+f.significant+'</td></tr>'
+
+
+           })
+           $("#tbody").html(s)
+       },"json");
+
+//图表A
+       var frm=$("#form2").serializeArray();
+       $.post("{{url_for('conflagration_select')}}",frm,function (d){
+           var years=[]
+           var commonly=[]
+           var more=[]
+           var major=[]
+           var significant=[]
+           years.push('product')
+           commonly.push('一般火灾')
+           more.push('较大火灾')
+           major.push('重大火灾')
+           significant.push('特大火灾')
+           for(var i=0;i<d.length;i++) {
+              years.push(d[i].year)
+               commonly.push(d[i].commonly)
+               more.push(d[i].more)
+               major.push(d[i].major)
+               significant.push(d[i].significant)
+           }
+
+
+
+//图表B
+    var dom = document.getElementById("container");
+	var myChart = echarts.init(dom);
+	var app = {};
+	var option;
+
+
+
+	setTimeout(function () {
+	  option = {
+	    legend: {},
+	    tooltip: {
+	      trigger: 'axis',
+	      showContent: false
+	    },
+	    dataset: {
+	  source: [
+	        years,
+	        commonly,
+	        more,
+	        major,
+	        significant
+	      ]
+	    },
+	    xAxis: { type: 'category' },
+	    yAxis: { gridIndex: 0 },
+	    grid: { top: '55%' },
+	    series: [
+	      {
+	        type: 'line',
+	        smooth: true,
+	        seriesLayoutBy: 'row',
+	        emphasis: { focus: 'series' }
+	      },
+	      {
+	        type: 'line',
+	        smooth: true,
+	        seriesLayoutBy: 'row',
+	        emphasis: { focus: 'series' }
+	      },
+	      {
+	        type: 'line',
+	        smooth: true,
+	        seriesLayoutBy: 'row',
+	        emphasis: { focus: 'series' }
+	      },
+	      {
+	        type: 'line',
+	        smooth: true,
+	        seriesLayoutBy: 'row',
+	        emphasis: { focus: 'series' }
+	      },
+	      {
+	        type: 'pie',
+	        id: 'pie',
+	        radius: '30%',
+	        center: ['50%', '25%'],
+	        emphasis: {
+	          focus: 'self'
+	        },
+	        label: {
+	          formatter: '{b}: {@2004} ({d}%)'
+	        },
+	        encode: {
+	          itemName: 'product',
+	          value: '2015',
+	          tooltip: '2004'
+	        }
+	      }
+	    ]
+	  };
+	  myChart.on('updateAxisPointer', function (event) {
+	    const xAxisInfo = event.axesInfo[0];
+	    if (xAxisInfo) {
+	      const dimension = xAxisInfo.value + 1;
+	      myChart.setOption({
+	        series: {
+	          id: 'pie',
+	          label: {
+	            formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+	          },
+	          encode: {
+	            value: dimension,
+	            tooltip: dimension
+	          }
+	        }
+	      });
+	    }
+	  });
+	  myChart.setOption(option);
+	});
+
+	if (option && typeof option === 'object') {
+	    myChart.setOption(option);
+	}
+
+
+       },"json");
+
+        }
+    </script>
+</head>
+<body onload='search()'>
+
+
+<div id="fanhui"><a href="{{url_for('shujubiao')}}">返回数据表</a></div>
+
+
+
+
+
+	<div id="container"style="height:800px;"></div>
+
+<div id="footer">
+		<div id="main">
+		  本站所有数据来自于国家统计局。如遇到bug,请联系<br>
+		  lixiang@website.com
+		</div>
+</div>
+
+
+</body>
+</html>

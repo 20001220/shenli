@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+<link rel="stylesheet" href="{{url_for('static',filename='../static/css/main.css')}}">
+      <script src="{{ url_for('static',filename='js/jquery-1.9.1.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/echarts.js') }}"></script>
+    <script>
+        //查询函数
+        function search(){
+         //将页面中的查询条件自动拼成json串传给py文件
+       var frm=$("#form2").serializeArray();
+       $.post("{{url_for('forest_select')}}",frm,function (d){
+           var s=''
+           $.each(d,function (i,f){
+               s+='<tr>'
+               s+='<td>'+f.year+'</td>'
+               s+='<td>'+f.forestrylandarea+'</td>'
+               s+='<td>'+f.forestcoverage+'</td>'
+               s+='<td>'+f.plantationarea+'</td>'
+               s+='<td>'+f.forest+'</td>'
+               s+='<td>'+f.livingtree+'</td>'
+               s+='<td>'+f.standingtree+'</td></tr>'
+
+
+           })
+           $("#tbody").html(s)
+       },"json");
+
+//图表A
+       var frm=$("#form2").serializeArray();
+       $.post("{{url_for('forest_select')}}",frm,function (d){
+           var years=[]
+           var forestrylandareas=[]
+           for(var i=0;i<d.length;i++) {
+              years.push(d[i].year)
+               forestrylandareas.push(d[i].plantationarea)
+           }
+               // 初始化图表标签 http://echarts.baidu.com/echarts2/doc/example.html
+           var myChart = echarts.init(document.getElementById('chart'));
+           var options={
+        //定义一个标题
+        title:{
+            text:'人工林面积统计'
+        },
+        legend:{
+            data:['人工林面积(万公顷)']
+        },
+        //X轴设置
+        xAxis:{
+            data:years
+        },
+        yAxis:{
+        },
+        //name=legend.data的时候才能显示图例
+        series:[{
+            name:'人工林面积(万公顷)',
+            type:'line', //pie饼图,bar柱图,line折线,漏斗funnel
+            data:forestrylandareas
+        }]
+
+    };
+    myChart.setOption(options);
+       },"json");
+
+        }
+    </script>
+</head>
+<body onload='search()'>
+
+
+
+<div id="fanhui"><a href="{{url_for('tubiao')}}">返回数据表</a></div>
+
+
+
+<div id="chart">
+
+</div>
+
+<div id="footer">
+		<div id="main">
+		  本站所有数据来自于国家统计局。如遇到bug,请联系<br>
+		  lixiang@website.com
+		</div>
+</div>
+
+
+</body>
+</html>
